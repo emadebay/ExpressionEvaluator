@@ -1,0 +1,110 @@
+#----------------------------------------------------------------------------
+#       Macros
+#----------------------------------------------------------------------------
+CC            = gcc
+CXX           = g++
+LD            = $(CXX) $(CCFLAGS) $(CPPFLAGS)
+AR            = ar
+PICFLAGS      = -fPIC
+CPPFLAGS      = $(PICFLAGS) $(GENFLAGS) -std=c++11
+OBJEXT        = .o
+OUTPUT_OPTION = -o "$@"
+COMPILE.c     = $(CC) $(CFLAGS) $(CPPFLAGS) -c
+COMPILE.cc    = $(CXX) $(CCFLAGS) $(CPPFLAGS) -c
+LDFLAGS       = -L"."
+CCC           = $(CXX)
+MAKEFILE      = Makefile.assignment3
+DEPENDENCIES  = .depend.$(MAKEFILE)
+BTARGETDIR    = ./
+BIN           = $(BTARGETDIR)assignment3$(EXESUFFIX)$(EXEEXT)
+CAT           = cat
+MV            = mv -f
+RM            = rm -rf
+CP            = cp -p
+NUL           = /dev/null
+MKDIR         = mkdir -p
+TESTDIRSTART  = test -d
+TESTDIREND    = ||
+TOUCH         = touch
+EXEEXT        = 
+LIBPREFIX     = lib
+LIBSUFFIX     = 
+GENFLAGS      = -O
+LDLIBS        = 
+OBJS          = driver$(OBJEXT) Calc_Facade$(OBJEXT) Command$(OBJEXT) Unary_Command$(OBJEXT) Binary_Command$(OBJEXT) Add_Command$(OBJEXT) Division_Command$(OBJEXT) Multiply_Command$(OBJEXT) Subtract_Command$(OBJEXT) Mod_Command$(OBJEXT) Number_Command$(OBJEXT) Expr_Command_Factory$(OBJEXT) Stack_Expr_Command_Factory$(OBJEXT)
+SRC           = driver.cpp Calc_Facade.cpp Command.cpp Unary_Command.cpp Binary_Command.cpp Add_Command.cpp Division_Command.cpp Multiply_Command.cpp Subtract_Command.cpp Mod_Command.cpp Number_Command.cpp Expr_Command_Factory.cpp Stack_Expr_Command_Factory.cpp
+LINK.cc       = $(LD) $(LDFLAGS)
+EXPORTFLAGS   = 
+
+#----------------------------------------------------------------------------
+#       Local targets
+#----------------------------------------------------------------------------
+
+all: $(BIN)
+
+$(BIN): $(OBJS)
+	@$(TESTDIRSTART) "$(BTARGETDIR)" $(TESTDIREND) $(MKDIR) "$(BTARGETDIR)"
+	$(LINK.cc) $(OBJS) $(LDLIBS) $(OUTPUT_OPTION)
+
+generated: $(GENERATED_DIRTY)
+	@-:
+
+driver$(OBJEXT): driver.cpp
+	$(COMPILE.cc) $(EXPORTFLAGS) $(OUTPUT_OPTION) driver.cpp
+
+Calc_Facade$(OBJEXT): Calc_Facade.cpp
+	$(COMPILE.cc) $(EXPORTFLAGS) $(OUTPUT_OPTION) Calc_Facade.cpp
+
+Command$(OBJEXT): Command.cpp
+	$(COMPILE.cc) $(EXPORTFLAGS) $(OUTPUT_OPTION) Command.cpp
+
+Unary_Command$(OBJEXT): Unary_Command.cpp
+	$(COMPILE.cc) $(EXPORTFLAGS) $(OUTPUT_OPTION) Unary_Command.cpp
+
+Binary_Command$(OBJEXT): Binary_Command.cpp
+	$(COMPILE.cc) $(EXPORTFLAGS) $(OUTPUT_OPTION) Binary_Command.cpp
+
+Add_Command$(OBJEXT): Add_Command.cpp
+	$(COMPILE.cc) $(EXPORTFLAGS) $(OUTPUT_OPTION) Add_Command.cpp
+
+Division_Command$(OBJEXT): Division_Command.cpp
+	$(COMPILE.cc) $(EXPORTFLAGS) $(OUTPUT_OPTION) Division_Command.cpp
+
+Multiply_Command$(OBJEXT): Multiply_Command.cpp
+	$(COMPILE.cc) $(EXPORTFLAGS) $(OUTPUT_OPTION) Multiply_Command.cpp
+
+Subtract_Command$(OBJEXT): Subtract_Command.cpp
+	$(COMPILE.cc) $(EXPORTFLAGS) $(OUTPUT_OPTION) Subtract_Command.cpp
+
+Mod_Command$(OBJEXT): Mod_Command.cpp
+	$(COMPILE.cc) $(EXPORTFLAGS) $(OUTPUT_OPTION) Mod_Command.cpp
+
+Number_Command$(OBJEXT): Number_Command.cpp
+	$(COMPILE.cc) $(EXPORTFLAGS) $(OUTPUT_OPTION) Number_Command.cpp
+
+Expr_Command_Factory$(OBJEXT): Expr_Command_Factory.cpp
+	$(COMPILE.cc) $(EXPORTFLAGS) $(OUTPUT_OPTION) Expr_Command_Factory.cpp
+
+Stack_Expr_Command_Factory$(OBJEXT): Stack_Expr_Command_Factory.cpp
+	$(COMPILE.cc) $(EXPORTFLAGS) $(OUTPUT_OPTION) Stack_Expr_Command_Factory.cpp
+
+clean:
+	-$(RM) $(OBJS)
+
+realclean: clean
+	-$(RM) $(BIN)
+
+check-syntax:
+	$(COMPILE.cc) $(EXPORTFLAGS) -Wall -Wextra -pedantic -fsyntax-only $(CHK_SOURCES)
+
+#----------------------------------------------------------------------------
+#       Dependencies
+#----------------------------------------------------------------------------
+
+$(DEPENDENCIES):
+	@$(TOUCH) $(DEPENDENCIES)
+
+depend:
+	-$(MPC_ROOT)/depgen.pl  $(CFLAGS) $(CCFLAGS) $(CPPFLAGS) -f $(DEPENDENCIES) $(SRC) 2> $(NUL)
+
+include $(DEPENDENCIES)
